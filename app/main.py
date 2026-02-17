@@ -21,19 +21,14 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Pre-load models and initialize stores on startup."""
+    """Initialize stores on startup. Embedding model loads lazily on first query."""
     logger.info("MemoryAI starting up...")
 
-    # Pre-load embedding model (warm cache)
-    from app.indexing.embedder import get_embedder
-    get_embedder()
-
-    # Initialize vector store
+    # Initialize vector store and entity store (lightweight, no model download)
     from app.indexing.vectorstore import get_vectorstore
     vs = get_vectorstore()
     logger.info(f"Vector store ready: {vs.count()} chunks indexed")
 
-    # Initialize entity store
     from app.indexing.entities import get_entity_store
     es = get_entity_store()
     stats = es.get_stats()
@@ -41,7 +36,7 @@ async def lifespan(app: FastAPI):
 
     llm_status = "Claude" if settings.anthropic_api_key else ("OpenAI" if settings.openai_api_key else "None (retrieval-only mode)")
     logger.info(f"LLM synthesis: {llm_status}")
-    logger.info("MemoryAI ready!")
+    logger.info("MemoryAI ready! (embedding model loads on first ingest/query)")
 
     yield
 

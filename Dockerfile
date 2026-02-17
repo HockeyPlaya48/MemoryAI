@@ -2,8 +2,9 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install CPU-only PyTorch first (saves ~1.5GB vs full torch)
-RUN pip install --no-cache-dir torch==2.2.2+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+# Install numpy first, then CPU-only PyTorch (saves ~1.5GB vs full torch)
+RUN pip install --no-cache-dir numpy>=1.24.0 && \
+    pip install --no-cache-dir torch==2.2.2+cpu --extra-index-url https://download.pytorch.org/whl/cpu
 
 # Install remaining deps
 COPY requirements.txt .

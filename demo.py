@@ -5,7 +5,7 @@ import json
 import requests
 import streamlit as st
 
-API_BASE = os.environ.get("MEMORYAI_API_URL", "http://localhost:8000").rstrip("/")
+API_BASE = os.environ.get("MEMORYAI_API_URL", "https://memoryai-u328.onrender.com").rstrip("/")
 
 st.set_page_config(page_title="MemoryAI", page_icon="🧠", layout="centered")
 
@@ -30,10 +30,10 @@ st.caption("AI-native knowledge base — ingest data, query with context, naviga
 
 # Check API health
 try:
-    health = requests.get(f"{API_BASE}/health", timeout=3).json()
+    health = requests.get(f"{API_BASE}/health", timeout=30).json()
     st.success(f"API connected — {health.get('status', 'unknown')}")
 except Exception:
-    st.error("API not running. Start it with: `uvicorn app.main:app --reload`")
+    st.warning("⏳ API is waking up (free tier cold start). Refresh in 30 seconds.")
     st.stop()
 
 # Tabs

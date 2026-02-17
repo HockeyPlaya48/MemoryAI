@@ -13,15 +13,14 @@ RUN pip install --no-cache-dir --no-deps sentence-transformers && \
 # Pre-download the embedding model during build (cached in image)
 RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
 
-# Force fresh build v2
 # Copy app code
 COPY . .
 
 # Create data directory
 RUN mkdir -p data
 
-# Railway injects PORT env var
-ENV PORT=8000
-EXPOSE ${PORT}
+# Render injects PORT env var
+ENV PORT=10000
+EXPOSE 10000
 
 CMD ["python", "run.py"]
